@@ -62,6 +62,8 @@ class Arma{
         return $this->getDanioBase() * ($this->getNivelMinimo() * 0.2);
     }
 
+    public function hola(){}
+
     public function equiparArma(): void{
         $this->setEstado("Equipada");
     }
