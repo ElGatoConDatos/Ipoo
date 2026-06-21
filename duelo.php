@@ -3,27 +3,26 @@ include_once 'arena.php';
 
 
 class Duelo{
+    // ATRIBUTOS
     private int $id;
     private Personaje $personaje1;
     private Personaje $personaje2;
     private Arena $arena;
     private string $fecha;
     private string $estado;
-    private string $ganador;
+    private ?Personaje $ganador = null;
 
-    
-    //CONSTRUCT
+    // CONSTRUCT
     public function __construct(int $id, Personaje $personaje1, Personaje $personaje2, Arena $arena, string $fecha, string $estado){
         $this->id = $id;
         $this->personaje1 = $personaje1;
         $this->personaje2 = $personaje2;
         $this->arena = $arena;
+        $this->fecha = $fecha;
         $this->estado = $estado;
-        $this->ganador = "";
     }
     
-    
-    //SETTER
+    // SETTER
     public function setId(int $id): void{
         $this->id = $id;
     }
@@ -42,11 +41,11 @@ class Duelo{
     public function setEstado(string $estado): void{
         $this->estado = $estado;
     }
-    public function setGanador(string $ganador): void{
+    public function setGanador(Personaje $ganador): void{
         $this->ganador = $ganador;
     }
 
-    //GETTER
+    // GETTER
     public function getId(): int{
         return $this->id;
     }
@@ -65,15 +64,11 @@ class Duelo{
     public function getEstado(): string{
         return $this->estado;
     }
-    public function getGanador(): string{
+    public function getGanador(): Personaje{
         return $this->ganador;
     }
 
-    
-
-
-
-    
+    // FUNCIONES
     public function puedeRealizarse(): bool{
         $respuesta = false;
         if ($this->getPersonaje1()->getId() !== $this->getPersonaje2()->getId()){
@@ -85,38 +80,61 @@ class Duelo{
     }
     
     public function realizarDuelo(): void {
-    if (!$this->puedeRealizarse()) {
+    if ($this->puedeRealizarse()) {
+        $p1PoderFinal = $this->getPersonaje1()->calcularPoderTotal() + $this->getArena()->calcularModificadorArena($this->getPersonaje1());
+        $p2PoderFinal = $this->getPersonaje2()->calcularPoderTotal() + $this->getArena()->calcularModificadorArena($this->getPersonaje2());
+
+        $ganador = ($p1PoderFinal > $p2PoderFinal) ? $this->getPersonaje1() : $this->getPersonaje2();
+        $perdedor = ($p1PoderFinal > $p2PoderFinal) ? $this->getPersonaje2() : $this->getPersonaje1();
+
+        $ganador->setNivel($ganador->getNivel() + 1);
+        $ganador->recuperarEnergia(5);
+        $ganador->setDuelosGanados($ganador->getDuelosGanados() + 1);
+
+        $perdedor->setDuelosPerdidos($perdedor->getDuelosPerdidos() + 1);
+        $perdedor->recuperarEnergia(-5); 
+        
+        $danio = $p1PoderFinal - $p2PoderFinal;
+        $perdedor->recibirDanio($danio);
+
+        $this->setGanador($ganador);
+
+        $this->setEstado("Realizado");
+        } else {
         $this->setEstado("Cancelado");
+        }
+    }   
+
+    public function obtenerGanador(): Personaje {
+        return $this->getGanador();
     }
 
-    $p1PoderFinal = $this->getPersonaje1()->calcularPoderTotal() + $this->getArena()->calcularModificadorArena($this->getPersonaje1());
-    $p2PoderFinal = $this->getPersonaje2()->calcularPoderTotal() + $this->getArena()->calcularModificadorArena($this->getPersonaje2());
+    public function resumenDuelo(): string {
+        if($this->getGanador() === $this->getPersonaje1()){
+            $ganador = $this->getGanador();
+            $perdedor = $this->getPersonaje2();
+        }
+        else{
+            $ganador = $this->getGanador();
+            $perdedor = $this->getPersonaje1();
+        }
+        $cadena = "........................................................................\n";
+        $cadena .= "Duelo: " . $this->getId() ."\n";
+        $cadena .= $this->getPersonaje1()->getNombre() . " (ID: " . $this->getPersonaje1()->getId() . ") VS ";
+        $cadena .= $this->getPersonaje2()->getNombre() . " (ID: " . $this->getPersonaje2()->getId() . ")\n";
+        $cadena .= $this->getArena()->datosArena();
+        $cadena .= "Estado del Duelo: ". $this->getEstado() . "\n\n";
+        if($this->getEstado() === "Realizado"){
+            $cadena .= "Resultado del Duelo: \n\n";
+            $cadena .= "Datos Ganador:\n";
+            $cadena .= $ganador->datosPersonaje();
 
-
-    $ganador = ($p1PoderFinal > $p2PoderFinal) ? $this->getPersonaje1() : $this->getPersonaje2();
-    $perdedor = ($p1PoderFinal > $p2PoderFinal) ? $this->getPersonaje2() : $this->getPersonaje1();
-
-    $ganador->setNivel($ganador->getNivel() + 1);
-    $ganador->recuperarEnergia(5);
-    $ganador->setDuelosGanados($ganador->getDuelosGanados() + 1);
-
-    $perdedor->setDuelosPerdidos($perdedor->getDuelosPerdidos() + 1);
-    
-    $perdedor->recuperarEnergia(-5); 
-    
-    $danio = $p1PoderFinal - $p2PoderFinal;
-    $perdedor->recibirDanio($danio);
-
-    
-    if ($perdedor->getPuntosVida() <= 0) {
-        $perdedor->setEstado("Retirado"); 
-    }
-
-    $this->setGanador($ganador->getNombre());
-    $this->setEstado("Realizado");
-    }
-    public function obtenerGanador(): string {
-    return $this->getGanador();
+            $cadena .= "Datos Perdedor:\n";
+            $cadena .= $perdedor->datosPersonaje();
+        }
+        $cadena .= "........................................................................\n";
+        return $cadena;
+        
     }
     
 }

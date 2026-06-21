@@ -2,6 +2,7 @@
 include_once 'personaje.php';
 
 class Arma{
+    // ATRIBUTOS
     private int $id;
     private string $nombre;
     private string $tipo;
@@ -9,7 +10,7 @@ class Arma{
     private int $nivelMinimo;
     private string $estado;
 
-    //CONSTRUCT
+    // CONSTRUCT
     public function __construct(int $id, string $nombre, string $tipo, float $danioBase, int $nivelMinimo, string $estado){
         $this->id = $id;
         $this->nombre = $nombre;
@@ -38,6 +39,7 @@ class Arma{
     public function setEstado(string $estado): void{
         $this->estado = $estado;
     }
+
     // GETTERS 
     public function getId(): int{
         return $this->id;
@@ -58,11 +60,10 @@ class Arma{
         return $this->estado;
     }
 
+    // FUNCIONES
     public function calcularDanio(){
         return $this->getDanioBase() * ($this->getNivelMinimo() * 0.2);
     }
-
-    public function hola(){}
 
     public function equiparArma(): void{
         $this->setEstado("Equipada");
@@ -76,5 +77,12 @@ class Arma{
             }
         }
         return $tieneRequisitos;
+    }
+
+    public function datosArma(){
+        $cadena = $this->getTipo(). " " . $this->getNombre() . " (ID: " . $this->getId() . ")\n";
+        $cadena .= "DMG: " . $this->getDanioBase() . " (Estado: " . $this->getEstado() . ")\n";
+        $cadena .= "Nivel Mínimo: " . $this->getNivelMinimo() . "\n\n";
+        return $cadena;
     }
 }

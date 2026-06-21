@@ -3,6 +3,7 @@
 
 
 abstract class Personaje{
+    // ATRIBUTOS
     private int $id;
     private string $nombre;
     private int $nivel;
@@ -26,7 +27,7 @@ abstract class Personaje{
         $this->estado = $estado;
     }
 
-    //SETTER
+    // SETTER
     public function setId(int $id){
         $this->id = $id;
     }
@@ -55,7 +56,7 @@ abstract class Personaje{
         $this->armaEquipada = $armaEquipada;
     }
 
-    //GETTER
+    // GETTER
     public function getId(){
         return $this->id;
     }
@@ -80,39 +81,35 @@ abstract class Personaje{
     public function getEstado(){
         return $this->estado;
     }
-    public function getArmaEquipada(): Arma{
+    public function getArmaEquipada():? Arma{
         return $this->armaEquipada;
     }
 
-
-
-    ///// REVISAR
+    // RESTO DE FUNCIONES
     public function recibirDanio(float $cantidad){
         $danioAVida = $this->getPuntosVida() - $cantidad;
         if($danioAVida <= 0){
-            $this->setPuntosVida(0.0);
+            $this->setPuntosVida(0);
             $this->setEstado("Retirado");
         }elseif($danioAVida > 0 && $danioAVida < 30){
             $this->setPuntosVida($danioAVida);
             $this->setEstado("Lesionado");
+        }else{
+            $this->setPuntosVida($danioAVida);
         }
     }
-
 
     public function recuperarVida(float $cantidad){
         $this->setPuntosVida($this->getPuntosVida() + $cantidad);
     }
 
-
     public function recuperarEnergia(float $cantidad){
         $this->setEnergia($this->getEnergia() + $cantidad);
     }
 
-
     public function puedeDuelar(): bool{
         return ($this->getEstado() === "Disponible" && $this->getPuntosVida() > 0);
     }
-
 
     public function calcularPoderTotal(){
         $poder = $this->calcularPoderBase() + $this->calcularPoderEspecial();
@@ -121,30 +118,37 @@ abstract class Personaje{
         }
         return $poder;
     }
-    
+
+    // FUNCIONES ABSTRACTAS
     abstract public function calcularPoderBase();
 
     abstract public function calcularPoderEspecial();
 
+    abstract public function datosPersonaje();
+
+    abstract public function getClase();
+
 }
 
 class Guerrero extends Personaje{
+    // ATRIBUTOS
     private float $fuerza;
     private float $armadura;
 
+    // CONSTRUCT
     public function __construct(int $id, string $nombre, int $nivel, float $puntosVida, float $energia, int $duelosGanados, int $duelosPerdidos, string $estado, float $fuerza, float $armadura){
         parent::__construct($id, $nombre, $nivel, $puntosVida, $energia, $duelosGanados, $duelosPerdidos, $estado);
         $this->fuerza = $fuerza;
         $this->armadura = $armadura;
     }
-    //SETTER
+    // SETTER
     public function setFuerza(float $fuerza){
         $this->fuerza = $fuerza;
     }   
     public function setArmadura(float $armadura){
         $this->armadura = $armadura;
     }
-    //GETTER
+    // GETTER
     public function getFuerza(){
         return $this->fuerza;
     }
@@ -152,6 +156,7 @@ class Guerrero extends Personaje{
         return $this->armadura;
     }
     
+    // FUNCIONES
     public function calcularPoderBase(){
         return parent::getNivel() * 15;
     }
@@ -160,17 +165,43 @@ class Guerrero extends Personaje{
         return ($this->getFuerza() * 2) + $this->getArmadura();
     }
 
+    public function getClase(){
+        return "Guerrero";
+    }
+
+    public function datosPersonaje(){
+        $cadena = "Nombre: " . parent::getNombre();
+        $cadena .= " (ID: ". parent::getId() . ")\n";
+        $cadena .= "Clase: Guerrero";
+        $cadena .= " (LvL: " . parent::getNivel() .")\n";
+        $cadena .= "Fuerza: " . $this->getFuerza() . " Armadura: " . $this->getArmadura() . "\n";
+        $cadena .= "Vida: " . parent::getPuntosVida();
+        $cadena .= " (Estado: " . parent::getEstado() . ")\n";
+        $cadena .= "Duelos Ganados / Perdidos: " . parent::getDuelosGanados();
+        $cadena .= "/" . parent::getDuelosPerdidos() . "\n\n";
+        $cadena .= "Datos del Arma: \n";
+        if($this->getArmaEquipada() !== null){
+            $cadena .= $this->getArmaEquipada()->datosArma() . "\n";
+        }
+        else{
+            $cadena .= "Sin Arma\n";
+        }
+        return $cadena;
+    }
 }
 
 class Mago extends Personaje{
+    // ATRIBUTOS
     private float $mana;
     private float $inteligencia;
     
+    // CONSTRUCT
     public function __construct(int $id, string $nombre, int $nivel, float $puntosVida, float $energia, int $duelosGanados, int $duelosPerdidos, string $estado, float $mana, float $inteligencia){
         parent::__construct($id, $nombre, $nivel, $puntosVida, $energia, $duelosGanados, $duelosPerdidos, $estado);
         $this->mana = $mana;
         $this->inteligencia = $inteligencia;
     }
+
     //SETTER
     public function setMana(float $mana): void{
         $this->mana = $mana;
@@ -178,6 +209,7 @@ class Mago extends Personaje{
     public function setInteligencia(float $inteligencia): void{
         $this->inteligencia = $inteligencia;
     }
+
     //GETTER
     public function getMana(): float{
         return $this->mana;
@@ -186,6 +218,7 @@ class Mago extends Personaje{
         return $this->inteligencia;
     }
 
+    // FUNCIONES
     public function calcularPoderBase(): float{
         return (parent::getNivel() * 10) + $this->getMana();
     }
@@ -193,17 +226,45 @@ class Mago extends Personaje{
     public function calcularPoderEspecial(): float{
         return $this->getMana() + ($this->getInteligencia() * 3);
     }
+
+    public function getClase(){
+        return "Mago";
+    }
+
+    public function datosPersonaje(){
+        $cadena = "Nombre: " . parent::getNombre();
+        $cadena .= " (ID: ". parent::getId() . ")\n";
+        $cadena .= "Clase: Mago";
+        $cadena .= " (LvL: " . parent::getNivel() .")\n";
+        $cadena .= "Mana: " . $this->getMana() . " Inteligencia: " . $this->getInteligencia() . "\n";
+        $cadena .= "Vida: " . parent::getPuntosVida();
+        $cadena .= " (Estado: " . parent::getEstado() . ")\n";
+        $cadena .= "Duelos Ganados / Perdidos: " . parent::getDuelosGanados();
+        $cadena .= "/" . parent::getDuelosPerdidos() . "\n\n";
+        $cadena .= "Datos del Arma: \n";
+        if($this->getArmaEquipada() !== null){
+            $cadena .= $this->getArmaEquipada()->datosArma() . "\n";
+        }
+        else{
+            $cadena .= "Sin Arma\n";
+        }
+        return $cadena;
+    }
+    
 }
 
 class Arquero extends Personaje{
+    // ATRIBUTOS
     private float $precision;
     private float $velocidad;
 
+    // CONSTRUCT
     public function __construct(int $id, string $nombre, int $nivel, float $puntosVida, float $energia, int $duelosGanados, int $duelosPerdidos, string $estado, float $precision,float $velocidad){
         parent::__construct($id, $nombre, $nivel, $puntosVida, $energia, $duelosGanados, $duelosPerdidos, $estado);
         $this->precision = $precision;
         $this->velocidad = $velocidad;
     }
+
     //SETTER
     public function setPrecision(float $precision): void{
         $this->precision = $precision; 
@@ -211,6 +272,7 @@ class Arquero extends Personaje{
     public function setVelocidad(float $velocidad): void{
         $this->velocidad = $velocidad;
     }
+
     //GETTER
     public function getPrecision(): float{
         return $this->precision;
@@ -219,12 +281,37 @@ class Arquero extends Personaje{
         return $this->velocidad;
     }
 
+    // FUNCIONES
     public function calcularPoderBase(){
         return (parent::getNivel() * 12) * $this->getPrecision();
     }
     
     public function calcularPoderEspecial(){
         return ($this->getPrecision() * 2) + $this->getVelocidad();
+    }
+
+    public function getClase(){
+        return "Arquero";
+    }
+
+    public function datosPersonaje(){
+        $cadena = "Nombre: " . parent::getNombre();
+        $cadena .= " (ID: ". parent::getId() . ")\n";
+        $cadena .= "Clase: Arquero";
+        $cadena .= " (LvL: " . parent::getNivel() .")\n";
+        $cadena .= "Precision: " . $this->getPrecision() . " Velocidad: " . $this->getVelocidad() . "\n";
+        $cadena .= "Vida: " . parent::getPuntosVida();
+        $cadena .= " (Estado: " . parent::getEstado() . ")\n";
+        $cadena .= "Duelos Ganados / Perdidos: " . parent::getDuelosGanados();
+        $cadena .= "/" . parent::getDuelosPerdidos() . "\n\n";
+        $cadena .= "Datos del Arma: \n";
+        if($this->getArmaEquipada() !== null){
+            $cadena .= $this->getArmaEquipada()->datosArma() . "\n";
+        }
+        else{
+            $cadena .= "Sin Arma\n";
+        }
+        return $cadena;
     }
 }
 
