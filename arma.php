@@ -65,18 +65,31 @@ class Arma{
         return $this->getDanioBase() * ($this->getNivelMinimo() * 0.2);
     }
 
+    
     public function equiparArma(): void{
-        $this->setEstado("Equipada");
+        $this->setEstado("equipada");
+    }
+
+    public function romperArma(): void{
+        $this->setEstado("rota");
     }
 
     public function puedeSerEquipadaPor(Personaje $personaje): bool{
-        $tieneRequisitos = false;
-        if($this->getEstado() == "Disponible"){
-            if ($personaje->getNivel() >= $this->getNivelMinimo()){
-                $tieneRequisitos = true;
-            }
+        $puedeserEquipada = true;
+        $estadoArma = strtolower($this->getEstado());
+        if($estadoArma === "rota"){
+                $puedeserEquipada = false;
+            
         }
-        return $tieneRequisitos;
+        if($estadoArma === "equipada"){
+                $puedeserEquipada = false;
+            
+        }
+        if($personaje->getNivel() < $this->getNivelMinimo()){
+                $puedeserEquipada = false;
+        }
+    
+        return $puedeserEquipada;
     }
 
     public function datosArma(){

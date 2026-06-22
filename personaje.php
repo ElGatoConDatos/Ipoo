@@ -90,10 +90,10 @@ abstract class Personaje{
         $danioAVida = $this->getPuntosVida() - $cantidad;
         if($danioAVida <= 0){
             $this->setPuntosVida(0);
-            $this->setEstado("Retirado");
+            $this->setEstado("retirado");
         }elseif($danioAVida > 0 && $danioAVida < 30){
             $this->setPuntosVida($danioAVida);
-            $this->setEstado("Lesionado");
+            $this->setEstado("lesionado");
         }else{
             $this->setPuntosVida($danioAVida);
         }
@@ -108,13 +108,13 @@ abstract class Personaje{
     }
 
     public function puedeDuelar(): bool{
-        return ($this->getEstado() === "Disponible" && $this->getPuntosVida() > 0);
+        return ($this->getEstado() === "disponible" && $this->getPuntosVida() > 0);
     }
 
     public function calcularPoderTotal(){
         $poder = $this->calcularPoderBase() + $this->calcularPoderEspecial();
         if ($this->getArmaEquipada() !== null){
-            $poder += $this->getArmaEquipada()->getDanioBase();
+            $poder += $this->getArmaEquipada()->calcularDanio();
         }
         return $poder;
     }
@@ -283,7 +283,7 @@ class Arquero extends Personaje{
 
     // FUNCIONES
     public function calcularPoderBase(){
-        return (parent::getNivel() * 12) * $this->getPrecision();
+        return (parent::getNivel() * 12) + $this->getPrecision();
     }
     
     public function calcularPoderEspecial(){

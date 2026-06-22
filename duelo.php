@@ -94,14 +94,14 @@ class Duelo{
         $perdedor->setDuelosPerdidos($perdedor->getDuelosPerdidos() + 1);
         $perdedor->recuperarEnergia(-5); 
         
-        $danio = $p1PoderFinal - $p2PoderFinal;
+        $danio = abs($p1PoderFinal - $p2PoderFinal); //Se usa el valor absoluto para que el daño sea positivo, independientemente de quién gane. Ya que la función recibirDanio espera un valor positivo para reducir la vida del perdedor.
         $perdedor->recibirDanio($danio);
 
         $this->setGanador($ganador);
 
-        $this->setEstado("Realizado");
+        $this->setEstado("realizado");
         } else {
-        $this->setEstado("Cancelado");
+        $this->setEstado("cancelado");
         }
     }   
 
@@ -124,13 +124,15 @@ class Duelo{
         $cadena .= $this->getPersonaje2()->getNombre() . " (ID: " . $this->getPersonaje2()->getId() . ")\n";
         $cadena .= $this->getArena()->datosArena();
         $cadena .= "Estado del Duelo: ". $this->getEstado() . "\n\n";
-        if($this->getEstado() === "Realizado"){
+        if($this->getEstado() === "realizado"){
             $cadena .= "Resultado del Duelo: \n\n";
             $cadena .= "Datos Ganador:\n";
             $cadena .= $ganador->datosPersonaje();
 
             $cadena .= "Datos Perdedor:\n";
             $cadena .= $perdedor->datosPersonaje();
+        }else{
+            $cadena .= "El duelo no se pudo realizar.\n";
         }
         $cadena .= "........................................................................\n";
         return $cadena;

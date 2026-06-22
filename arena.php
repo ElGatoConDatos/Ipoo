@@ -1,17 +1,16 @@
 <?php
 include_once 'personaje.php';
-include_once 'arma.php';
 
 class Arena{
     // ATRIBUTOS
     private int $id;
     private string $nombre;
-    private string $dificultad;
+    private int $dificultad;
     private int $capacidadPublico;
     private string $clima;
     
     // CONSTRUCT
-    public function __construct(int $id, string $nombre, string $dificultad, int $capacidadPublico, string $clima){
+    public function __construct(int $id, string $nombre, int $dificultad, int $capacidadPublico, string $clima){
         $this->id = $id;
         $this->nombre = $nombre;
         $this->dificultad = $dificultad;
@@ -26,7 +25,7 @@ class Arena{
     public function setNombre(string $nombre): void{
         $this->nombre = $nombre;
     }
-    public function setDificultad(string $dificultad): void{
+    public function setDificultad(int $dificultad): void{
         $this->dificultad = $dificultad;
     }
     public function setCapacidadPublico(int $capacidadPublico): void{
@@ -43,7 +42,7 @@ class Arena{
     public function getNombre(): string{
         return  $this->nombre;
     }
-    public function getDificultad(): string{
+    public function getDificultad(): int{
         return  $this->dificultad;
     }
     public function getCapacidadPublico(): int{
@@ -55,10 +54,10 @@ class Arena{
 
     // FUNCIONES
     public function calcularModificadorArena(Personaje $personaje): int {
-        $clima = $this->getClima();
+        $clima = strtolower($this->getClima());
         $clase = $personaje->getClase();
         $modificador = 0;
-        if ($clima == "Lluvia") {
+        if ($clima == "lluvia") {
             if ($clase == "Mago"){
                 $modificador = 5;
             }
@@ -66,7 +65,7 @@ class Arena{
                 $modificador = -10;
             } 
         } 
-        elseif ($clima == "Tormenta") {
+        elseif ($clima == "tormenta") {
             if ($clase == "Mago"){
                 $modificador = 15;
             }    
@@ -77,7 +76,7 @@ class Arena{
                 $modificador = -5;
             }
         } 
-        elseif ($clima == "Niebla") {
+        elseif ($clima == "niebla") {
             if ($clase == "Guerrero"){
                 $modificador = 5;
             }
