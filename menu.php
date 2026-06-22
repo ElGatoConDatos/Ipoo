@@ -63,6 +63,11 @@ do {
                 $personaje = new Arquero(0,$nombre,1,100,100,0,0,"disponible",20,20);
             }
             $personajeDAO->alta($personaje);
+            if($personajeDAO->alta($personaje)){
+                echo "Personaje registrado correctamente.\n";
+            } else {
+                echo "Error al registrar el personaje.\n";
+            }
             break;
         case 2:
             echo "Nombre del arma: ";

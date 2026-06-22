@@ -7,9 +7,9 @@ class PersonajeDAO{
     
     public function alta(Personaje $personaje): bool{
         $sql = "INSERT INTO personajes
-        (nombre, tipoPersonaje, nivel, vida, energia, duelosGanados, duelosPerdidos, estado)
+        (nombre, tipoPersonaje, nivel, puntosVida, energia, duelosGanados, duelosPerdidos, estado)
         VALUES
-        (:nombre, :tipoPersonaje, :nivel, :vida, :energia, :duelosGanados, :duelosPerdidos, :estado)";
+        (:nombre, :tipoPersonaje, :nivel, :puntosVida, :energia, :duelosGanados, :duelosPerdidos, :estado)";
         $stmt = $this->conexion->prepare($sql);
         RETURN $stmt->execute([
             ':nombre' => $personaje->getNombre(),
@@ -17,8 +17,8 @@ class PersonajeDAO{
             ':nivel' => $personaje->getNivel(),
             ':puntosVida' => $personaje->getPuntosVida(),
             ':energia' => $personaje->getEnergia(),
-            ':DuelosGanados' => $personaje->getDuelosGanados(),
-            ':DuelosPerdidos' => $personaje->getDuelosPerdidos(),
+            ':duelosGanados' => $personaje->getDuelosGanados(),
+            ':duelosPerdidos' => $personaje->getDuelosPerdidos(),
             ':estado' => $personaje->getEstado(),
         ]);
     }
