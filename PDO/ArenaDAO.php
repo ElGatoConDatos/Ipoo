@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../Arena.php';
 class ArenaDAO
 {
     private PDO $conexion;
@@ -16,7 +17,7 @@ class ArenaDAO
         $stmt = $this->conexion->prepare($sql);
         return $stmt->execute([
             ':nombre' => $arena->getNombre(),
-            ':dificultad' => strtolower($arena->getDificultad()),
+            ':dificultad' => $arena->getDificultad(),
             ':capacidadPublico' => $arena->getCapacidadPublico(),
             ':clima' => strtolower($arena->getClima()),
         ]);
@@ -32,7 +33,6 @@ class ArenaDAO
     public function modificar(Arena $arena): bool
     {
         $sql = "UPDATE arenas SET
-        id = :id,
         nombre = :nombre,
         dificultad = :dificultad,
         capacidadPublico = :capacidadPublico,
@@ -49,31 +49,41 @@ class ArenaDAO
         ]);
     }
 
-   public function buscarPorId(int $id): ?Arena
-{
-    $sql = "SELECT * FROM arenas WHERE id = ?";
-    $stmt = $this->conexion->prepare($sql);
-    $stmt->execute([$id]);
+    public function buscarPorId(int $id): ?Arena
+    {
+        $sql = "SELECT * FROM arenas WHERE id = ?";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->execute([$id]);
 
-    $fila = $stmt->fetch(PDO::FETCH_ASSOC);
+        $fila = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if (!$fila) {
-        return null;
+        if (!$fila) {
+            return null;
+        }
+
+        return new Arena(
+            $fila['id'],
+            $fila['nombre'],
+            $fila['dificultad'],
+            $fila['capacidadPublico'],
+            $fila['clima']
+        );
     }
-
-    return new Arena(
-        $fila['id'],
-        $fila['nombre'],
-        $fila['dificultad'],
-        $fila['capacidadPublico'],
-        $fila['clima']
-    );
-}
     public function listar(): array
     {
-        $sql = "SELECT * FROM arenas";
+        $sql = "SELECT id FROM arenas";
+
         $stmt = $this->conexion->query($sql);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $ids = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+        $arenas = [];
+
+        foreach ($ids as $id) {
+            $arenas[] = $this->buscarPorId($id);
+        }
+
+        return $arenas;
     }
 
 }

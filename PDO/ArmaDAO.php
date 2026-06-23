@@ -1,16 +1,37 @@
 <?php
+require_once __DIR__ . '/../Arma.php';
 class ArmaDAO{
     private PDO $conexion;
     public function __construct(PDO $conexion){
         $this->conexion = $conexion;
     }
     
-   public function listar(string $estado): array{
-        $sql = "SELECT * FROM armas WHERE estado = :estado";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->execute([':estado' => $estado]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+   public function listar(string $estado = ""): array
+{
+    $sql = "SELECT id FROM armas";
+
+    if ($estado !== "") {
+        $sql .= " WHERE estado = :estado";
     }
+
+    $stmt = $this->conexion->prepare($sql);
+
+    if ($estado !== "") {
+        $stmt->execute([':estado' => $estado]);
+    } else {
+        $stmt->execute();
+    }
+
+    $ids = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+    $armas = [];
+
+    foreach ($ids as $id) {
+        $armas[] = $this->buscarPorId($id);
+    }
+
+    return $armas;
+}
 
     public function buscarPorId(int $id): ?Arma{
     $sql = "SELECT * FROM armas WHERE id = ?";

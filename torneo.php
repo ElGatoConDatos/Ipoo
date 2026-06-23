@@ -1,307 +1,133 @@
 <?php
-
 class Torneo
 {
-    // ATRIBUTOS
-    private array $colPersonajes = [];
-    private array $colArmas = [];
-    private array $colArenas = [];
-    private array $colDuelos = [];
+    private PersonajeDAO $personajeDAO;
+    private ArmaDAO $armaDAO;
+    private ArenaDAO $arenaDAO;
+    private DueloDAO $dueloDAO;
 
-
-    public function __construct(array $colPersonajes, array $colArmas, array $colArenas, array $colDuelos)
-    {
-        $this->colPersonajes = $colPersonajes;
-        $this->colArmas = $colArmas;
-        $this->colArenas = $colArenas;
-        $this->colDuelos = $colDuelos;
+    public function __construct(
+        PersonajeDAO $personajeDAO,
+        ArmaDAO $armaDAO,
+        ArenaDAO $arenaDAO,
+        DueloDAO $dueloDAO
+    ) {
+        $this->personajeDAO = $personajeDAO;
+        $this->armaDAO = $armaDAO;
+        $this->arenaDAO = $arenaDAO;
+        $this->dueloDAO = $dueloDAO;
     }
-
-    //SETTER
-    public function setColPersonajes(array $colPersonajes): void
+    public function agregarPersonaje(Personaje $p): bool
     {
-        $this->colPersonajes = $colPersonajes;
-    }
-    public function setColArmas(array $colArmas): void
-    {
-        $this->colArmas = $colArmas;
-    }
-    public function setColArenas(array $colArenas): void
-    {
-        $this->colArenas = $colArenas;
-    }
-    public function setColDuelos(array $colDuelos): void
-    {
-        $this->colDuelos = $colDuelos;
+        return $this->personajeDAO->alta($p);
     }
 
-    //GETTER
-    public function getColPersonajes(): array
+    public function agregarArma(Arma $a): bool
     {
-        return $this->colPersonajes;
-    }
-    public function getColArmas(): array
-    {
-        return $this->colArmas;
-    }
-    public function getColArenas(): array
-    {
-        return $this->colArenas;
-    }
-    public function getColDuelos(): array
-    {
-        return $this->colDuelos;
+        return $this->armaDAO->alta($a);
     }
 
-    // FUNCIONES
-    public function agregarPersonaje(Personaje $personaje): void
+    public function agregarArena(Arena $a): bool
     {
-        $lista = $this->getColPersonajes();
-        $lista[] = $personaje;
-        $this->setColPersonajes($lista);
+        return $this->arenaDAO->alta($a);
     }
 
-    public function agregarArma(Arma $arma): void
+    public function registrarDuelo(Duelo $d): bool
     {
-        $lista = $this->getColArmas();
-        $lista[] = $arma;
-        $this->setColArmas($lista);
+        return $this->dueloDAO->alta($d);
     }
-
-    public function agregarArena(Arena $arena): void
+    public function equiparArma(int $idPersonaje, int $idArma): bool
     {
-        $lista = $this->getColArenas();
-        $lista[] = $arena;
-        $this->setColArenas($lista);
-    }
+        $personaje = $this->personajeDAO->buscarPorId($idPersonaje);
+        $arma = $this->armaDAO->buscarPorId($idArma);
 
-    public function equiparArma(Personaje $personaje, Arma $arma): bool
-    {
-        $puedeEquiparse = false;
-        if ($arma->puedeSerEquipadaPor($personaje)) {
-            $personaje->setArmaEquipada($arma);
-            $arma->equiparArma();
-            $puedeEquiparse = true;
+        if (!$personaje || !$arma) {
+            return false;
         }
-        return $puedeEquiparse;
-    }
 
-    public function registrarDuelo(Duelo $duelo): void
-    {
-        $lista = $this->getColDuelos();
-        $lista[] = $duelo;
-        $this->setColDuelos($lista);
-    }
-
-    public function realizarDuelo(Duelo $duelo): string
-    {
-        $duelo->realizarDuelo();
-        $this->registrarDuelo($duelo);
-        return $duelo->resumenDuelo();
-    }
-
-    public function listarPersonajes(): string
-    {
-        $lista = "=== LISTADO DE PERSONAJES ===\n";
-        foreach ($this->getColPersonajes() as $personaje) {
-            $lista .= "Nombre: " . $personaje->getNombre() . " | ";
-            $lista .= "ID: " . $personaje->getID() . " | ";
-            $lista .= "Nivel: " . $personaje->getNivel() . "\n";
+        if (!$arma->puedeSerEquipadaPor($personaje)) {
+            return false;
         }
-        return $lista;
+
+        $personaje->setArmaEquipada($arma);
+        $arma->equiparArma();
+
+        $this->personajeDAO->actualizar($personaje);
+        $this->armaDAO->actualizar($arma);
+
+        return true;
+    }
+    public function ejecutarDuelosPendientes(): void
+    {
+        $pendientes = $this->dueloDAO->listarPendientes();
+
+        foreach ($pendientes as $data) {
+
+            $p1 = $this->personajeDAO->buscarPorId($data['idPersonaje1']);
+            $p2 = $this->personajeDAO->buscarPorId($data['idPersonaje2']);
+            $arena = $this->arenaDAO->buscarPorId($data['idArena']);
+
+            $duelo = new Duelo(
+                $data['id'],
+                $p1,
+                $p2,
+                $arena,
+                $data['fecha'],
+                $data['estado']
+            );
+
+            $duelo->realizarDuelo();
+
+            $this->dueloDAO->actualizar($duelo);
+            $this->personajeDAO->actualizar($p1);
+            $this->personajeDAO->actualizar($p2);
+        }
+    }
+    public function buscarPersonaje(int $id): ?Personaje
+    {
+        return $this->personajeDAO->buscarPorId($id);
     }
 
-    public function listarArmas(): string
+    public function buscarArma(int $id): ?Arma
     {
-        $lista = "";
-        foreach ($this->getColArmas() as $arma) {
-            $lista .= $arma->getTipo();
-            $lista .= " " . $arma->getNombre();
-            $lista .= " ID: " . $arma->getID() . "\n";
-        }
-        return $lista;
+        return $this->armaDAO->buscarPorId($id);
     }
 
-    public function listarArenas(): string
+    public function buscarArena(int $id): ?Arena
     {
-        $lista = "";
-        foreach ($this->getColArenas() as $arena) {
-            $lista .= "Nombre: " . $arena->getNombre();
-            $lista .= " (ID: " . $arena->getID() . ")\n";
-        }
-        return $lista;
+        return $this->arenaDAO->buscarPorId($id);
+    }
+    public function listarPersonajes(string $estado = ""): array
+    {
+        return $this->personajeDAO->listar($estado);
     }
 
-    public function listarDuelos(): string
+    public function listarArmas(string $estado = ""): array
     {
-        $lista = "---Historial de duelos----" . "\n";
-        if (count($this->getColDuelos()) === 0) {
-            $lista = "No se registraron duelos todavía.\n";
-        }
-        foreach ($this->getColDuelos() as $duelo) {
-            $lista .= $duelo->resumenDuelo() . "\n";
-        }
-        return $lista;
+        return $this->armaDAO->listar($estado);
     }
 
-    public function rankingPersonajes(): string
+    public function listarArenas(): array
     {
-        $ranking = $this->getColPersonajes();
-
-        usort($ranking, function ($a, $b) {
-            return $b->getDuelosGanados() <=> $a->getDuelosGanados();
-        });
-
-        $cadena = "==== Ranking del TOP 5 ====\n";
-
-        $i = 1;
-        foreach ($ranking as $personaje) {
-            if ($i <= 5) {
-                $cadena .= "TOP:" . $i . "\n";
-                $cadena .= "Nombre: " . $personaje->getNombre();
-                $cadena .= " (ID: " . $personaje->getId() . ")\n";
-                $cadena .= "(Victorias / Perdidas): " . $personaje->getDuelosGanados() . "\n";
-                $cadena .= "Nivel: " . $personaje->getNivel() . "\n";
-                $i++;
-            }
-        }
-        return $cadena;
+        return $this->arenaDAO->listar();
     }
-    public function buscarPersonajePorID(int $id): ?Personaje
+    public function rankingVictorias(): array
     {
-        $encontrado = null;
-        foreach ($this->getColPersonajes() as $personaje) {
-            if ($personaje->getID() === $id) {
-                $encontrado = $personaje;
-            }
-        }
-        return $encontrado; 
+        return $this->dueloDAO->rankingVictorias();
     }
 
-    public function buscarArmaPorID(int $id): ?Arma
+    public function personajeMasVictorias(): ?array
     {
-        $encontrado = null;
-        foreach ($this->getColArmas() as $arma) {
-            if ($arma->getID() === $id) {
-                $encontrado = $arma;
-            }
-        }
-        return $encontrado; // Retorna el arma encontrada o null si no se encuentra
+        return $this->dueloDAO->personajeMasVictorias();
     }
 
-    public function buscarArenaPorID(int $id): ?Arena
+    public function arenaMasDuelos(): ?array
     {
-        $encontrado = null;
-        foreach ($this->getColArenas() as $arena) {
-            if ($arena->getID() === $id) {
-                $encontrado = $arena;
-            }
-        }
-        return $encontrado; // Retorna el arena encontrada o null si no se encuentra
+        return $this->dueloDAO->arenaMasDuelos();
     }
 
-    public function buscarDueloPorID(int $id): ?Duelo
+    public function porcentajeVictorias(int $id): float
     {
-        $encontrado = null;
-        foreach ($this->getColDuelos() as $duelo) {
-            if ($duelo->getID() === $id) {
-                $encontrado = $duelo;
-            }
-        }
-        return $encontrado; // Retorna el duelo encontrado o null si no se encuentra
-    }
-
-    public function listarPersonajesDisponibles(): string
-    {
-        $lista = "=== PERSONAJES DISPONIBLES ===\n";
-        foreach ($this->getColPersonajes() as $personaje) {
-            if ($personaje->getEstado() === "disponible") {
-                $lista .= $personaje->datosPersonaje() . "\n";
-            }
-        }
-        return $lista;
-    }
-
-    public function listarPersonajesLesionados(): string
-    {
-        $lista = "=== PERSONAJES LESIONADOS ===\n";
-        foreach ($this->getColPersonajes() as $personaje) {
-            if ($personaje->getEstado() === "lesionado") {
-                $lista .= $personaje->datosPersonaje() . "\n";
-            }
-        }
-        return $lista;
-    }
-
-    public function listarPersonajesRetirados(): string
-    {
-        $lista = "=== PERSONAJES RETIRADOS ===\n";
-        foreach ($this->getColPersonajes() as $personaje) {
-            if ($personaje->getEstado() === "retirado") {
-                $lista .= $personaje->datosPersonaje() . "\n";
-            }
-        }
-        return $lista;
-    }
-
-    public function listarArmasDisponibles(): string
-    {
-        $lista = "=== ARMAS DISPONIBLES ===\n";
-        foreach ($this->getColArmas() as $arma) {
-            if ($arma->getEstado() === "disponible") {
-                $lista .= $arma->datosArma() . "\n";
-            }
-        }
-        return $lista;
-    }
-
-    public function mostrarArmaPorPersonaje(): string
-    {
-        $lista = "=== ARMAS EQUIPADAS POR PERSONAJE ===\n";
-        foreach ($this->getColPersonajes() as $personaje) {
-            $arma = $personaje->getArmaEquipada();
-            if ($arma !== null) {
-                $lista .= "Personaje: " . $personaje->getNombre() . " (ID: " . $personaje->getID() . ")\n";
-                $lista .= "Arma: " . $arma->datosArma() . "\n";
-                $lista .= "-----------------------------\n";
-            } else {
-                $lista .= "Personaje: " . $personaje->getNombre() . " (ID: " . $personaje->getID() . ") no tiene arma equipada.\n";
-                $lista .= "-----------------------------\n";
-            }
-        }
-        return $lista;
-    }
-
-    public function listarDuelosPendientes(): string
-    {
-        $lista = "=== DUELOS PENDIENTES ===\n";
-        foreach ($this->getColDuelos() as $duelo) {
-            if ($duelo->getEstado() === "pendiente") {
-                $lista .= $duelo->resumenDuelo() . "\n";
-            }
-        }
-        return $lista;
-    }
-
-    public function historialPersonaje(Personaje $personaje): string
-    {
-        $historial = "=== HISTORIAL DE DUELOS DE " . $personaje->getNombre() . " ===\n";
-        foreach ($this->getColDuelos() as $duelo) {
-            if ($duelo->getPersonaje1()->getID() === $personaje->getID() || $duelo->getPersonaje2()->getID() === $personaje->getID()) {
-                $historial .= $duelo->resumenDuelo() . "\n";
-            }
-        }
-        return $historial;
-    }
-
-    public function personajeMasVictorias(): ?Personaje
-    {
-        $masVictorias = null;
-        foreach ($this->getColPersonajes() as $personaje) {
-            if ($masVictorias === null || $personaje->getDuelosGanados() > $masVictorias->getDuelosGanados()) {
-                $masVictorias = $personaje;
-            }
-        }
-        return $masVictorias;
+        return $this->dueloDAO->porcentajeVictorias($id);
     }
 }
