@@ -71,8 +71,8 @@ do {
     echo "4. Equipar arma\n"; // Ya
     echo "5. Crear Duelo\n"; // Ya 
     echo "6. Ejecutar duelos pendientes\n"; // Ya Pero falta Nombres del PJ1 Y PJ2, mirar case:6
-    //echo "7. Recuperar Personajes Lesionados\n"; // No
-    //echo "8. Ranking victorias\n";  // No
+    echo "7. Recuperar Personajes Lesionados\n"; // Ya, pero parece que falta que se guarde en DAO (En mi caso)
+    echo "8. Ranking victorias\n";  // Parece estar, testear
     //echo "9. Historial de personaje\n"; // No
 
     // LO QUE FALTA
@@ -377,13 +377,67 @@ do {
                     echo "-------------------------\n";
                 }
                 echo "¿Desea Ejecutar los duelos? (S/N)\n";
-                $ejecutarlos = trim(fgets(STDIN));
-                if($ejecutarlos == "y"){
+                $ejecutarlos = strtolower(trim(fgets(STDIN)));
+                if($ejecutarlos == "s"){
                     $torneo->ejecutarDuelosPendientes();
                     echo "Duelos ejecutados.\n\n";
                 }
                 else{
                     echo "Duelos postergados.\n\n";
+                }
+            }
+            echo "Presione ENTER para continuar...";
+            trim(fgets(STDIN));
+            break;
+        }
+        case 7:{
+            echo "\n=== PERSONAJES LESIONADOS ===\n";
+            foreach ($torneo->listarPersonajes("lesionado") as $p) {
+                echo "(ID: " . $p->getId() . ") " . $p->getNombre() . ", Estado: Lesionado\n";
+            }
+            echo "-------------------------\n\n";
+            echo "¿Desea Recuperar a los Personajes lesionados? (S/N)\n";
+                $recuperarlos = strtolower(trim(fgets(STDIN)));
+                if($recuperarlos == "s"){
+                    foreach ($torneo->listarPersonajes("lesionado") as $p) {
+                        $p->recuperarVida(30.0);
+                        $p->recuperarEnergia(10.0);
+                        $p->setEstado("disponible");
+                    }
+                    echo "-------------------------\n";
+                    echo "Personajes Recuperados!\n\n";
+                    echo "Presione ENTER para continuar...";
+                    trim(fgets(STDIN));
+                    break;
+                }
+                else{
+                    echo "-------------------------\n";
+                    echo "Presione ENTER para continuar...";
+                    trim(fgets(STDIN));
+                    break;
+                }
+                
+        }
+        case 8:{
+
+            $ranking = $torneo->rankingVictorias();
+
+            if (empty($ranking)) {
+                echo "No hay victorias registradas.\n";
+            } else {
+
+                foreach ($ranking as $fila) {
+
+                    $personaje = $torneo->buscarPersonaje(
+                        (int) $fila['personaje_id']
+                    );
+
+                    if ($personaje) {
+                        echo $personaje->getNombre();
+                        echo " - ";
+                        echo $fila['total_victorias'];
+                        echo " victorias\n";
+                    }
                 }
             }
             echo "Presione ENTER para continuar...";
@@ -434,31 +488,6 @@ do {
             } else {
                 foreach ($arenas as $arena) {
                     echo $arena->datosArena() . "\n";
-                }
-            }
-
-            break;
-        }
-        case 64:{
-
-            $ranking = $torneo->rankingVictorias();
-
-            if (empty($ranking)) {
-                echo "No hay victorias registradas.\n";
-            } else {
-
-                foreach ($ranking as $fila) {
-
-                    $personaje = $torneo->buscarPersonaje(
-                        (int) $fila['personaje_id']
-                    );
-
-                    if ($personaje) {
-                        echo $personaje->getNombre();
-                        echo " - ";
-                        echo $fila['total_victorias'];
-                        echo " victorias\n";
-                    }
                 }
             }
 
