@@ -27,12 +27,12 @@ class DueloDAO{
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function listarPendientes(): array{
-        $sql = "SELECT * FROM duelos WHERE resultado IS NULL";
-        $stmt = $this->conexion->query($sql);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    public function listarPendientes(): array {
+    $sql = "SELECT * FROM duelos WHERE estado = 'pendiente'";
+    $stmt = $this->conexion->query($sql);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
+    
     public function rankingVictorias(): array{
         $sql = "SELECT personaje_id, SUM(victorias) AS total_victorias FROM (
                     SELECT personaje1_id AS personaje_id, COUNT(*) AS victorias FROM duelos WHERE resultado = 'personaje1' GROUP BY personaje1_id
@@ -69,35 +69,48 @@ class DueloDAO{
     );
 }
 
-    public function alta(Duelo $duelo): bool{
-        $sql = "INSERT INTO duelos
-        (personaje1_id, personaje2_id, arena_id, resultado)
-        VALUES
-        (:personaje1_id, :personaje2_id, :arena_id, :resultado)";
+    public function alta(Duelo $duelo): bool {
+        $sql = "INSERT INTO duelos (idPersonaje1, idPersonaje2, idArena, fecha, estado) 
+                VALUES (:id1, :id2, :idArena, :fecha, 'pendiente')";
+        
         $stmt = $this->conexion->prepare($sql);
         return $stmt->execute([
-            ':personaje1_id' => $duelo->getPersonaje1()->getId(),
-            ':personaje2_id' => $duelo->getPersonaje2()->getId(),
-            ':arena_id' => $duelo->getArena()->getId(),
-            ':resultado' => strtolower($duelo->resumenDuelo()),
+            ':id1'     => $duelo->getPersonaje1()->getId(),
+            ':id2'     => $duelo->getPersonaje2()->getId(),
+            ':idArena' => $duelo->getArena()->getId(),
+            ':fecha'   => $duelo->getFecha()
         ]);
     }
-    public function actualizar(Duelo $duelo): bool{
-        $sql = "UPDATE duelos SET
-        personaje1_id = :personaje1_id,
-        personaje2_id = :personaje2_id,
-        arena_id = :arena_id,
-        resultado = :resultado
-        WHERE id = :id";
-        $stmt = $this->conexion->prepare($sql);
-        return $stmt->execute([
-            ':personaje1_id' => $duelo->getPersonaje1()->getId(),
-            ':personaje2_id' => $duelo->getPersonaje2()->getId(),
-            ':arena_id' => $duelo->getArena()->getId(),
-            ':resultado' => strtolower($duelo->resumenDuelo()),
-            ':id' => $duelo->getId()
-        ]);
-    }
+
+    // 2. Actualización final (Cuando el duelo termina)
+    // En DueloDAO.php, dentro de la función actualizar()
+        public function actualizar(Duelo $duelo): bool {
+            $sql = "UPDATE duelos SET 
+                    estado = :estado, 
+                    idGanador = :idGanador, 
+                    poderPersonaje1 = :poder1, 
+                    poderPersonaje2 = :poder2, 
+                    danioAplicado = :danio 
+                    WHERE id = :id";
+            
+            $stmt = $this->conexion->prepare($sql);
+            $ganador = $duelo->getGanador();
+
+            // CALCULAMOS AL VUELO usando lo que ya existe en Arena y Personaje
+            $poder1 = $duelo->getPersonaje1()->calcularPoderTotal() + $duelo->getArena()->calcularModificadorArena($duelo->getPersonaje1());
+            $poder2 = $duelo->getPersonaje2()->calcularPoderTotal() + $duelo->getArena()->calcularModificadorArena($duelo->getPersonaje2());
+            $danio = abs($poder1 - $poder2);
+
+            return $stmt->execute([
+                ':estado'    => $duelo->getEstado(),
+                ':idGanador' => ($ganador !== null) ? $ganador->getId() : null,
+                ':poder1'    => $poder1,
+                ':poder2'    => $poder2,
+                ':danio'     => $danio,
+                ':id'        => $duelo->getId()
+            ]);
+        }
+    
     public function listarDuelosPorPersonaje(int $personajeId): array{
         $sql = "SELECT * FROM duelos WHERE personaje1_id = ? OR personaje2_id = ?";
         $stmt = $this->conexion->prepare($sql);

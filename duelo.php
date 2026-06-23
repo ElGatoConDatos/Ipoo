@@ -64,7 +64,7 @@ class Duelo{
     public function getEstado(): string{
         return $this->estado;
     }
-    public function getGanador(): Personaje{
+    public function getGanador():? Personaje{
         return $this->ganador;
     }
 

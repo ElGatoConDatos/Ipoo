@@ -10,14 +10,14 @@ class ArenaDAO
     public function alta(Arena $arena): bool
     {
         $sql = "INSERT INTO arenas
-        (nombre, dificultad, capacidad, clima)
+        (nombre, dificultad, capacidadPublico, clima)
         VALUES
-        (:nombre, :dificultad, :capacidad, :clima)";
+        (:nombre, :dificultad, :capacidadPublico, :clima)";
         $stmt = $this->conexion->prepare($sql);
         return $stmt->execute([
             ':nombre' => $arena->getNombre(),
             ':dificultad' => strtolower($arena->getDificultad()),
-            ':capacidad' => $arena->getCapacidadPublico(),
+            ':capacidadPublico' => $arena->getCapacidadPublico(),
             ':clima' => strtolower($arena->getClima()),
         ]);
     }
@@ -35,7 +35,7 @@ class ArenaDAO
         id = :id,
         nombre = :nombre,
         dificultad = :dificultad,
-        capacidad = :capacidad,
+        capacidadPublico = :capacidadPublico,
         clima = :clima
         WHERE id = :id";
         $stmt = $this->conexion->prepare($sql);
@@ -43,7 +43,7 @@ class ArenaDAO
             ':id' => $arena->getId(),
             ':nombre' => $arena->getNombre(),
             ':dificultad' => $arena->getDificultad(),
-            ':capacidad' => $arena->getCapacidadPublico(),
+            ':capacidadPublico' => $arena->getCapacidadPublico(),
             ':clima' => $arena->getClima(),
 
         ]);
