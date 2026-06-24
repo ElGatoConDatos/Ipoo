@@ -130,4 +130,93 @@ class Torneo
     {
         return $this->dueloDAO->porcentajeVictorias($id);
     }
+    public function eliminarPersonaje(int $id): bool
+{
+    return $this->personajeDAO->baja($id);
+}
+
+public function eliminarArma(int $id): bool
+{
+    return $this->armaDAO->baja($id);
+}
+
+public function eliminarArena(int $id): bool
+{
+    return $this->arenaDAO->baja($id);
+}
+
+public function actualizarPersonaje(Personaje $personaje): bool
+{
+    return $this->personajeDAO->actualizar($personaje);
+}
+
+public function actualizarArma(Arma $arma): bool
+{
+    return $this->armaDAO->actualizar($arma);
+}
+
+public function actualizarArena(Arena $arena): bool
+{
+    return $this->arenaDAO->modificar($arena);
+}
+
+public function listarDuelos(): array
+{
+    return $this->dueloDAO->listar();
+}
+
+public function listarDuelosPendientes(): array
+{
+    return $this->dueloDAO->listarPendientes();
+}
+
+public function listarDuelosRealizados(): array
+{
+    return $this->dueloDAO->listarRealizados();
+}
+
+public function historialPersonaje(int $id): array
+{
+    return $this->dueloDAO->historialPersonaje($id);
+}
+
+public function recuperarPersonajeLesionado(int $id): bool
+{
+    $personaje = $this->buscarPersonaje($id);
+
+    if (!$personaje) {
+        return false;
+    }
+
+    if ($personaje->getEstado() !== 'lesionado') {
+        return false;
+    }
+
+    $personaje->recuperarVida(100);
+
+    $personaje->setEstado('disponible');
+
+    return $this->personajeDAO->actualizar($personaje);
+}
+
+public function armasEquipadas(): array
+{
+    $resultado = [];
+
+    foreach ($this->listarPersonajes() as $personaje) {
+
+        if ($personaje->getArmaEquipada() !== null) {
+
+            $resultado[] = [
+                'personaje' => $personaje,
+                'arma' => $personaje->getArmaEquipada()
+            ];
+        }
+    }
+
+    return $resultado;
+}
+
+
+
 }

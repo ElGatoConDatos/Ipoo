@@ -95,7 +95,7 @@ class Arma{
     public function datosArma(){
         $cadena = $this->getTipo(). " " . $this->getNombre() . " (ID: " . $this->getId() . ")\n";
         $cadena .= "DMG: " . $this->getDanioBase() . " (Estado: " . $this->getEstado() . ")\n";
-        $cadena .= "Nivel Mínimo: " . $this->getNivelMinimo() . "\n";
+        $cadena .= "Nivel Mínimo: " . $this->getNivelMinimo() . "\n\n";
         return $cadena;
     }
 }

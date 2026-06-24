@@ -26,84 +26,93 @@ $torneo = new Torneo(
 );
 
 // Una función para limpiar la consola, si la leen, pueden ver que funciona distinto dependiendo de su sistema operativo, escojan la que deban
-function limpiarPantalla() {
-   // ** Dependindo la versión del sistema operativo y de PHP, utilizar la función que mejor funcione **
+function limpiarPantalla()
+{
+    // ** Dependindo la versión del sistema operativo y de PHP, utilizar la función que mejor funcione **
 
-   //shell_exec("cls");
-   //shell_exec("clear");
-   //system("cls");
-   //pclose(popen('cls','w'));
-   //for ($i = 0; $i < 50; $i++) echo "\r\n";
-   //echo chr(27).chr(91).'H'.chr(27).chr(91).'J'; // funciona bien
-   //popen('clear', 'w'); // linux
-   popen('cls', 'w'); // funciona bien en windows
+    //shell_exec("cls");
+    //shell_exec("clear");
+    //system("cls");
+    //pclose(popen('cls','w'));
+    //for ($i = 0; $i < 50; $i++) echo "\r\n";
+    //echo chr(27).chr(91).'H'.chr(27).chr(91).'J'; // funciona bien
+    //popen('clear', 'w'); // linux
+    popen('cls', 'w'); // funciona bien en windows
 }
 
 // Funcion principalmente para el menú, pero puede ser reutilizado sin problema, lo que hace es dar un margen de números para evitar números fuera del rango deseado
-function opcionValida(int $min, int $max){
-    do{
+function opcionValida(int $min, int $max)
+{
+    do {
         $numero = (int)trim(fgets(STDIN));
         if (!($numero >= $min  && $numero <= $max)) {
-            echo "⛔ Opción inválida. Por favor ingrese un número del ".$min." al ".$max.".\n";
-        }
-        else
+            echo "⛔ Opción inválida. Por favor ingrese un número del " . $min . " al " . $max . ".\n";
+        } else
             return $numero;
-    }while(!($numero >= $min  && $numero <= $max));
+    } while (!($numero >= $min  && $numero <= $max));
 }
 
 // Funcion para que solo puedan escojer positivos Float 
-function soloPositivo(){
-    do{
+function soloPositivo()
+{
+    do {
         $numero = (float)trim(fgets(STDIN));
         if (!($numero > 0)) {
             echo "⛔ Número inválido. Por favor que el número sea Mayor a 0.\n";
-        }
-        else
+        } else
             return $numero;
-    }while(!($numero > 0 ));
+    } while (!($numero > 0));
 }
+
 do {
     limpiarPantalla();
     echo "===== TORNEO DE DUELOS =====\n";
-    echo "1. Crear Personaje\n"; // Ya
-    echo "2. Crear Arma\n"; // Ya
-    echo "3. Crear Arena\n"; // Ya
-    echo "4. Equipar arma\n"; // Ya
-    echo "5. Crear Duelo\n"; // Ya 
-    echo "6. Ejecutar duelos pendientes\n"; // Ya Pero falta Nombres del PJ1 Y PJ2, mirar case:6
-    echo "7. Recuperar Personajes Lesionados\n"; // Ya, pero parece que falta que se guarde en DAO (En mi caso)
-    echo "8. Ranking victorias\n";  // Parece estar, testear
-    //echo "9. Historial de personaje\n"; // No
 
-    // LO QUE FALTA
-    // Terminar lo de Ejecutar Duelos Pendientes, falta solo sacar el nombre de los PJ (Ver en la base de datos y poner la salida)
-    // Recuperar personajes lesionados
-    // Historial de duelos de un personaje
-    // Falta Listar Solamente Personajes Lesionados o Retirados, y personajes que están listos para duelar.
-    // Mostrar Arma equipada por cada personaje, estilo Arma x x x, la tiene X, solo faltaría colocar quien la tiene.
-    // Historial de Duelos Realizados // Lista de Duelos Pendientes
-    // De cada personaje // Falta Crear Arma, Crear Arena
+    echo "\n--- PERSONAJES ---\n";
+    echo "1. Crear personaje\n";
+    echo "2. Modificar personaje\n";
+    echo "3. Listar personajes\n";
+    echo "4. Listar personajes disponibles\n";
+    echo "5. Listar personajes lesionados\n";
+    echo "6. Listar personajes retirados\n";
+    echo "7. Recuperar personaje lesionado\n";
 
-    //Extra, hacer una opción 10. que adentro haya estos, son del Ejercicio 8 de Consultas Obligatorias
-    // Ejemplo 10. Extra
-    // Dentro de eso salga otro mini menu diciendo
-    // 1. Listar personajes (En Listar Personajes, que te permita mostrarlos TODOS o por algún estado en particular)
-    // 2. Listar armas disponibles
-    // 3. Mostrar el arma Equipada por cada personaje (Ejemplo, "(ID: 3) Espada Legendaria, Equipada por: (ID: 1) Thor" )
-    // 4. Mostrar los duelos por separado (Realizados / Pendientes)
-    // 5. Mostrar Historial de duelos de un personaje (Sean perdidas / Canceladas / Ganadas)
-    // 6. Mostrar % de victorias de cada personaje (Dar al usuario la opción de elegir si TODOS o uno en particular)
-    // 5. Ranking de arenas donde más duelos se realizaron (Realmente solo piden la que más tiene pero queda re croto)
+    echo "\n--- ARMAS ---\n";
+    echo "8. Crear arma\n";
+    echo "9. Modificar arma\n";
+    echo "10. Eliminar arma\n";
+    echo "11. Listar armas\n";
+    echo "12. Mostrar armas equipadas\n";
+    echo "13. Equipar arma\n";
 
-    echo "0. Salir\n";
+    echo "\n--- ARENAS ---\n";
+    echo "14. Crear arena\n";
+    echo "15. Modificar arena\n";
+    echo "16. Eliminar arena\n";
+    echo "17. Listar arenas\n";
+
+    echo "\n--- DUELOS ---\n";
+    echo "18. Crear duelo\n";
+    echo "19. Ejecutar duelos pendientes\n";
+    echo "20. Listar duelos realizados\n";
+    echo "21. Listar duelos pendientes\n";
+    echo "22. Historial de personaje\n";
+
+    echo "\n--- ESTADISTICAS ---\n";
+    echo "23. Ranking de victorias\n";
+    echo "24. Personaje con más victorias\n";
+    echo "25. Porcentaje de victorias\n";
+    echo "26. Arena con más duelos\n";
+
+    echo "\n0. Salir\n";
     echo "============================\n\n";
     echo "Opción: ";
-    $opcion = opcionValida(0, 10);
+    $opcion = opcionValida(0, 26);
     limpiarPantalla();
     switch ($opcion) {
 
-        case 1:{ // Crear Personaje
-            echo "===== CREADOR DE PERSONAJES =====\n";
+        case 1:
+            echo "===== CREADOR DE PERSONAJES =====\n\n";
             echo "Nombre: ";
             $nombre = trim(fgets(STDIN));
 
@@ -189,65 +198,357 @@ do {
                 default:
                     echo "----------------------------\n\n";
                     echo "Clase inválida.\n\n";
+                    echo "Presione ENTER para continuar...";
+                    trim(fgets(STDIN));
                     break;
             }
-
             if ($personaje !== null) {
-
-                if ($torneo->agregarPersonaje($personaje)) {
-                    echo "Personaje creado correctamente.\n";
-                } else {
-                    echo "Error al crear personaje.\n";
-                }
                 echo "----------------------------\n\n";
+                if ($torneo->agregarPersonaje($personaje)) {
+                    echo "Personaje creado correctamente.\n\n";
+                } else {
+                    echo "Error al crear personaje.\n\n";
+                }
             }
             echo "Presione ENTER para continuar...";
             trim(fgets(STDIN));
             break;
-        }
 
-        case 2:{ // Crear arma
-            echo "===== CREADOR DE ARMAS =====\n";
-            echo "Nombre del Arma: ";
+        case 2:
+            echo "===== MODIFICADOR DE PERSONAJES =====\n\n";
+            $personajes = $torneo->listarPersonajes();
+
+            if (empty($personajes)) {
+                echo "----------------------------\n\n";
+                echo "No hay personajes registrados.\n";
+                echo "Presione ENTER para continuar...";
+                trim(fgets(STDIN));
+                break;
+            } else {
+                foreach ($personajes as $p) {
+                    echo $p->datosPersonaje();
+                    echo "----------------------------\n\n";
+                }
+
+                echo "ID Personaje: ";
+                $id = (int) trim(fgets(STDIN));
+                limpiarPantalla();
+                echo "===== MODIFICADOR DE PERSONAJES =====\n";
+                $personaje = $torneo->buscarPersonaje($id);
+
+                if (!$personaje) {
+
+                    echo "Personaje inexistente.\n\n";
+                    echo "Presione ENTER para continuar...";
+                    trim(fgets(STDIN));
+                    break;
+                }
+
+                echo "Nuevo nombre: ";
+                $personaje->setNombre(trim(fgets(STDIN)));
+
+                echo "Nuevo nivel: ";
+                $personaje->setNivel(opcionValida(1, 100));
+
+                if ($personaje instanceof Guerrero) {
+
+                    echo "Fuerza: ";
+                    $personaje->setFuerza(soloPositivo());
+
+                    echo "Armadura: ";
+                    $personaje->setArmadura(soloPositivo());
+                } elseif ($personaje instanceof Mago) {
+
+                    echo "Mana: ";
+                    $personaje->setMana(soloPositivo());
+
+                    echo "Inteligencia: ";
+                    $personaje->setInteligencia(soloPositivo());
+                } elseif ($personaje instanceof Arquero) {
+
+                    echo "Precision: ";
+                    $personaje->setPrecision(soloPositivo());
+
+                    echo "Velocidad: ";
+                    $personaje->setVelocidad(soloPositivo());
+                }
+                echo "----------------------------\n\n";
+                if ($torneo->actualizarPersonaje($personaje)) {
+                    echo "Personaje actualizado.\n\n";
+                } else {
+                    echo "Error al actualizar.\n\n";
+                }
+                echo "Presione ENTER para continuar...";
+                trim(fgets(STDIN));
+                break;
+            }
+
+        case 3:
+            echo "===== LISTA DE PERSONAJES =====\n\n";
+            $personajes = $torneo->listarPersonajes();
+
+            if (empty($personajes)) {
+                echo "----------------------------\n\n";
+                echo "No hay personajes registrados.\n";
+            } else {
+                foreach ($personajes as $p) {
+                    echo $p->datosPersonaje();
+                    echo "----------------------------\n\n";
+                }
+            }
+            echo "Presione ENTER para continuar...";
+            trim(fgets(STDIN));
+            break;
+
+        case 4:
+            echo "===== PERSONAJES DISPONIBLES =====\n\n";
+            $personajes = $torneo->listarPersonajes('disponible');
+
+            if (empty($personajes)) {
+                echo "----------------------------\n\n";
+                echo "No hay personajes disponibles.\n";
+            } else {
+                foreach ($personajes as $p) {
+                    echo $p->datosPersonaje();
+                    echo "----------------------------\n\n";
+                }
+            }
+            echo "Presione ENTER para continuar...";
+            trim(fgets(STDIN));
+            break;
+        case 5:
+            echo "===== PERSONAJES LESIONADOS =====\n\n";
+            $personajes = $torneo->listarPersonajes('lesionado');
+
+            if (empty($personajes)) {
+                echo "----------------------------\n\n";
+                echo "No hay personajes lesionados.\n";
+            } else {
+                foreach ($personajes as $p) {
+                    echo $p->datosPersonaje();
+                    echo "----------------------------\n\n";
+                }
+            }
+            echo "Presione ENTER para continuar...";
+            trim(fgets(STDIN));
+            break;
+
+        case 6:
+            echo "===== PERSONAJES RETIRADOS =====\n\n";
+            $personajes = $torneo->listarPersonajes('retirado');
+
+            if (empty($personajes)) {
+                echo "----------------------------\n\n";
+                echo "No hay personajes retirados.\n\n";
+            } else {
+                foreach ($personajes as $p) {
+                    echo $p->datosPersonaje();
+                    echo "----------------------------\n\n";
+                }
+            }
+            echo "Presione ENTER para continuar...";
+            trim(fgets(STDIN));
+            break;
+
+        case 7:
+            echo "===== RECUPERAR UN PERSONAJE =====\n\n";
+            $personajes = $torneo->listarPersonajes('lesionado');
+
+            if (empty($personajes)) {
+                echo "----------------------------\n\n";
+                echo "No hay personajes registrados.\n";
+                echo "Presione ENTER para continuar...";
+                trim(fgets(STDIN));
+                break;
+            } else {
+                foreach ($personajes as $p) {
+                    echo $p->datosPersonaje();
+                    echo "----------------------------\n\n";
+                }
+
+                echo "ID Personaje: ";
+                $id = (int) trim(fgets(STDIN));
+                limpiarPantalla();
+                echo "----------------------------\n\n";
+                if ($torneo->recuperarPersonajeLesionado($id)) {
+                    echo "Personaje recuperado correctamente.\n";
+                } else {
+                    echo "No se pudo recuperar.\n\n";
+                }
+                echo "Presione ENTER para continuar...";
+                trim(fgets(STDIN));
+                break;
+            }
+        case 8:
+            echo "===== CREADOR DE ARENAS =====\n\n";
+            echo "Nombre: ";
             $nombre = trim(fgets(STDIN));
 
-            echo "Tipo del Arma: ";
+            echo "Tipo: ";
             $tipo = trim(fgets(STDIN));
 
-            echo "Daño base: ";
-            $danio = soloPositivo();
+            echo "Daño Base: ";
+            $danioBase = soloPositivo();
 
-            echo "Nivel mínimo (1-100): ";
+            echo "Nivel Minimo: ";
             $nivelMinimo = opcionValida(1, 100);
 
             $arma = new Arma(
                 0,
                 $nombre,
                 $tipo,
-                $danio,
+                $danioBase,
                 $nivelMinimo,
-                "disponible"
+                'disponible'
             );
-
-            $torneo->agregarArma($arma);
             echo "----------------------------\n\n";
-            echo "Arma creada correctamente.\n\n";
+            if ($torneo->agregarArma($arma)) {
+                echo "Arma creada correctamente.\n\n";
+            } else {
+                echo "Error al crear arma.\n\n";
+            }
             echo "Presione ENTER para continuar...";
             trim(fgets(STDIN));
             break;
-        }
-        case 3:{ // Crear arena
-            echo "===== CREADOR DE ARENAS =====\n";
-            echo "Nombre de la Arena: ";
+
+        case 9:
+            echo "===== MODIFICADOR DE ARMAS =====\n\n";
+            $armas = $torneo->listarArmas();
+            if (empty($armas)) {
+                echo "----------------------------\n\n";
+                echo "No existen armas aún.\n\n";
+            } else {
+                foreach ($armas as $arma) {
+                    echo $arma->datosArma();
+                    echo "----------------------------\n\n";
+                }
+            }
+            echo "ID Arma: ";
+            $id = (int) trim(fgets(STDIN));
+
+            $arma = $torneo->buscarArma($id);
+
+            if (!$arma) {
+                echo "----------------------------\n\n";
+                echo "Arma inexistente.\n\n";
+            } else {
+                limpiarPantalla();
+                echo "===== MODIFICADOR DE ARMAS =====\n\n";
+                echo "Nombre: ";
+                $arma->setNombre(trim(fgets(STDIN)));
+
+                echo "Tipo: ";
+                $arma->setTipo(trim(fgets(STDIN)));
+
+                echo "Daño Base: ";
+                $arma->setDanioBase(soloPositivo());
+
+                echo "Nivel Mínimo: ";
+                $arma->setNivelMinimo(opcionValida(1, 100));
+
+                echo "Estado (disponible/equipada/rota): ";
+                $arma->setEstado(trim(fgets(STDIN)));
+                echo "----------------------------\n\n";
+                if ($torneo->actualizarArma($arma)) {
+                    echo "Arma modificada.\n\n";
+                } else {
+                    echo "Error al modificar.\n\n";
+                }
+            }
+            echo "Presione ENTER para continuar...";
+            trim(fgets(STDIN));
+            break;
+
+        case 10:
+            echo "===== ELIMINADOR DE ARMAS =====\n\n";
+            $armas = $torneo->listarArmas();
+            if (empty($armas)) {
+                echo "----------------------------\n\n";
+                echo "No existen armas aún.\n\n";
+            } else {
+                foreach ($armas as $arma) {
+                    echo $arma->datosArma();
+                    echo "----------------------------\n\n";
+                }
+                echo "ID Arma: ";
+                $id = (int) trim(fgets(STDIN));
+                echo "----------------------------\n\n";
+                if ($torneo->eliminarArma($id)) {
+                    echo "Arma eliminada.\n\n";
+                } else {
+                    echo "No se pudo eliminar.\n\n";
+                }
+            }
+            echo "Presione ENTER para continuar...";
+            trim(fgets(STDIN));
+            break;
+
+        case 11:
+            echo "===== LISTA DE ARMAS =====\n\n";
+            echo "Estado (disponible/equipada/rota o ENTER): ";
+            $estado = strtolower(trim(fgets(STDIN)));
+
+            $armas = $torneo->listarArmas($estado);
+
+            if (empty($armas)) {
+                echo "\n No existen armas con estado '$estado'.\n";
+            } else {
+                foreach ($armas as $arma) {
+                    echo $arma->datosArma();
+                    echo "----------------------------\n\n";
+                }
+            }
+
+            break;
+
+        case 12:
+
+            $equipados = $torneo->armasEquipadas();
+
+            if (empty($equipados)) {
+
+                echo "No hay armas equipadas.\n";
+            } else {
+
+                foreach ($equipados as $fila) {
+
+                    echo $fila['personaje']->getNombre();
+                    echo " -> ";
+                    echo $fila['arma']->getNombre();
+                    echo "\n";
+                }
+            }
+
+            break;
+
+        case 13:
+
+            echo "ID Personaje: ";
+            $idPersonaje = (int) trim(fgets(STDIN));
+
+            echo "ID Arma: ";
+            $idArma = (int) trim(fgets(STDIN));
+
+            if ($torneo->equiparArma($idPersonaje, $idArma)) {
+                echo "Arma equipada correctamente.\n";
+            } else {
+                echo "No se pudo equipar el arma.\n";
+            }
+
+            break;
+
+        case 14:
+
+            echo "Nombre: ";
             $nombre = trim(fgets(STDIN));
 
-            echo "Dificultad (1-5): ";
-            $dificultad = opcionValida(1,5);
+            echo "Dificultad: ";
+            $dificultad = (int) trim(fgets(STDIN));
 
-            echo "Capacidad de público: ";
-            $capacidad = opcionValida(0, 50000);
+            echo "Capacidad Publico: ";
+            $capacidad = (int) trim(fgets(STDIN));
 
-            echo "Clima (Soleado / Lluvia / Tormenta / Niebla): ";
+            echo "Clima (normal/lluvia/tormenta/niebla): ";
             $clima = strtolower(trim(fgets(STDIN)));
 
             $arena = new Arena(
@@ -258,57 +559,85 @@ do {
                 $clima
             );
 
-            $torneo->agregarArena($arena);
-            echo "----------------------------\n\n";
-            echo "Arena creada correctamente.\n\n";
-            echo "Presione ENTER para continuar...";
-            trim(fgets(STDIN));
-            break;
-        }
-        case 4:{ // Equipar Arma
-            $personajes = $torneo->listarPersonajes();
-            $armas = $torneo->listarArmas("disponible");
-
-            if (empty($personajes)) {
-                echo "No hay Personajes registrados.\n";
+            if ($torneo->agregarArena($arena)) {
+                echo "Arena creada correctamente.\n";
+            } else {
+                echo "Error al crear arena.\n";
             }
-            else {
-                if (empty($armas)) {
-                    echo "No hay Armas registradas.\n";
+
+            break;
+
+        case 15:
+
+            echo "ID Arena: ";
+            $id = (int) trim(fgets(STDIN));
+
+            $arena = $torneo->buscarArena($id);
+
+            if (!$arena) {
+
+                echo "Arena inexistente.\n";
+            } else {
+
+                echo "Nombre: ";
+                $arena->setNombre(trim(fgets(STDIN)));
+
+                echo "Dificultad: ";
+                $arena->setDificultad((int) trim(fgets(STDIN)));
+
+                echo "Capacidad Público: ";
+                $arena->setCapacidadPublico((int) trim(fgets(STDIN)));
+
+                echo "Clima: ";
+                $arena->setClima(trim(fgets(STDIN)));
+
+                if ($torneo->actualizarArena($arena)) {
+                    echo "Arena modificada.\n";
+                } else {
+                    echo "Error al modificar.\n";
                 }
-                else {
-                    echo "===== LISTA DE PERSONAJES =====\n\n";
-                    foreach ($personajes as $p) {
-                        echo $p->datosPersonaje();
-                        echo "----------------------------\n\n";
-                    }
-                    echo "Elija Personaje (ID): ";
-                    $idPersonaje = (int) trim(fgets(STDIN));
-                    limpiarPantalla();
-                    echo "===== LISTA DE ARMAS =====\n\n";
-                    foreach ($armas as $a) {
-                        echo $a->datosArma();
-                        echo "----------------------------\n\n";
-                    }
-
-                    echo "Elija Arma a equipar (ID): ";
-                    $idArma = (int) trim(fgets(STDIN));
-
-                    if ($torneo->equiparArma($idPersonaje, $idArma)) {
-                        echo "Arma equipada correctamente.\n\n";
-                    } else {
-                        echo "No se pudo equipar el arma.\n\n";
-                    }
             }
-            echo "Presione ENTER para continuar...";
-            trim(fgets(STDIN));
+
             break;
+
+        case 16:
+
+            echo "ID Arena: ";
+            $id = (int) trim(fgets(STDIN));
+
+            if ($torneo->eliminarArena($id)) {
+                echo "Arena eliminada.\n";
+            } else {
+                echo "No se pudo eliminar.\n";
             }
-        }
-        case 5:{ // Crear Duelo
+
+            break;
+
+        case 17:
+
+            $arenas = $torneo->listarArenas();
+
+            if (empty($arenas)) {
+                echo "No hay arenas registradas.\n";
+            } else {
+                foreach ($arenas as $arena) {
+                    echo $arena->datosArena() . "\n";
+                }
+            }
+
+            break;
+
+        case 18:
             echo "\n=== PERSONAJES DISPONIBLES ===\n";
+
             foreach ($torneo->listarPersonajes("disponible") as $p) {
-                echo "(ID: " . $p->getId() . ") " . $p->getNombre() . "\n";
+                echo $p->getId() . " - " . $p->getNombre() . "\n";
+            }
+
+            echo "\n=== ARENAS ===\n";
+
+            foreach ($torneo->listarArenas() as $a) {
+                echo $a->getId() . " - " . $a->getNombre() . "\n";
             }
 
             echo "ID Personaje 1: ";
@@ -317,16 +646,8 @@ do {
             echo "ID Personaje 2: ";
             $idP2 = (int) trim(fgets(STDIN));
 
-            limpiarPantalla();
-            echo "\n=== ARENAS ===\n";
-
-            foreach ($torneo->listarArenas() as $a) {
-                echo "(ID: " . $a->getId() . ") " . $a->getNombre() . "\n";
-            }
-
             echo "ID Arena: ";
             $idArena = (int) trim(fgets(STDIN));
-            limpiarPantalla();
 
             $p1 = $torneo->buscarPersonaje($idP1);
             $p2 = $torneo->buscarPersonaje($idP2);
@@ -335,11 +656,9 @@ do {
             if (!$p1 || !$p2 || !$arena) {
 
                 echo "Personajes o arena inexistentes.\n";
-
             } elseif ($idP1 === $idP2) {
 
                 echo "Un personaje no puede enfrentarse a sí mismo.\n";
-
             } else {
 
                 $duelo = new Duelo(
@@ -357,68 +676,116 @@ do {
                     echo "Error al registrar duelo.\n";
                 }
             }
-            echo "Presione ENTER para continuar...";
-            trim(fgets(STDIN));
-            break;
-        }
-        case 6:{ // Ejecutar duelos pendientes
-            $pendientes = $dueloDAO->listarPendientes();
 
-            if (empty($pendientes)) {
-                echo "No hay duelos pendientes.\n\n";
-            }
-            else{
-                foreach ($pendientes as $duelo) {
-                    echo "ID: " . $duelo['id'] . "\n";
-                    echo "Fecha: " . $duelo['fecha'] . "\n";
-                    echo "Personaje 1 | " . $duelo['nombrePersonaje2'] . "(ID: " . $duelo['idPersonaje1'] . ")\n";
-                    echo "Personaje 2 | " . $duelo['nombrePersonaje2'] . "(ID: " . $duelo['idPersonaje2'] . ")\n";
-                    echo "Arena ID: " . $duelo['idArena'] . "\n";
-                    echo "-------------------------\n";
-                }
-                echo "¿Desea Ejecutar los duelos? (S/N)\n";
-                $ejecutarlos = strtolower(trim(fgets(STDIN)));
-                if($ejecutarlos == "s"){
-                    $torneo->ejecutarDuelosPendientes();
-                    echo "Duelos ejecutados.\n\n";
-                }
-                else{
-                    echo "Duelos postergados.\n\n";
-                }
-            }
-            echo "Presione ENTER para continuar...";
-            trim(fgets(STDIN));
             break;
-        }
-        case 7:{
-            echo "\n=== PERSONAJES LESIONADOS ===\n";
-            foreach ($torneo->listarPersonajes("lesionado") as $p) {
-                echo "(ID: " . $p->getId() . ") " . $p->getNombre() . ", Estado: Lesionado\n";
+
+        case 19:
+
+            $torneo->ejecutarDuelosPendientes();
+
+            echo "Duelos ejecutados.\n";
+
+            break;
+
+        case 20:
+
+            $duelos = $torneo->listarDuelosRealizados();
+
+            if (empty($duelos)) {
+
+                echo "No hay duelos realizados.\n";
+            } else {
+
+                foreach ($duelos as $duelo) {
+
+                    $p1 = $torneo->buscarPersonaje(
+                        $duelo['idPersonaje1']
+                    );
+
+                    $p2 = $torneo->buscarPersonaje(
+                        $duelo['idPersonaje2']
+                    );
+
+                    echo "Duelo #{$duelo['id']} | ";
+                    echo $p1->getNombre();
+                    echo " VS ";
+                    echo $p2->getNombre();
+                    echo " | ";
+                    echo $duelo['fecha'];
+                    echo "\n";
+                }
             }
-            echo "-------------------------\n\n";
-            echo "¿Desea Recuperar a los Personajes lesionados? (S/N)\n";
-                $recuperarlos = strtolower(trim(fgets(STDIN)));
-                if($recuperarlos == "s"){
-                    foreach ($torneo->listarPersonajes("lesionado") as $p) {
-                        $p->recuperarVida(30.0);
-                        $p->recuperarEnergia(10.0);
-                        $p->setEstado("disponible");
-                    }
-                    echo "-------------------------\n";
-                    echo "Personajes Recuperados!\n\n";
-                    echo "Presione ENTER para continuar...";
-                    trim(fgets(STDIN));
-                    break;
+
+            break;
+
+        case 21:
+
+            $duelos = $torneo->listarDuelosPendientes();
+
+            if (empty($duelos)) {
+
+                echo "No hay duelos pendientes.\n";
+            } else {
+
+                foreach ($duelos as $duelo) {
+
+                    $p1 = $torneo->buscarPersonaje(
+                        $duelo['idPersonaje1']
+                    );
+
+                    $p2 = $torneo->buscarPersonaje(
+                        $duelo['idPersonaje2']
+                    );
+
+                    echo "Duelo #{$duelo['id']} | ";
+                    echo $p1->getNombre();
+                    echo " VS ";
+                    echo $p2->getNombre();
+                    echo " | ";
+                    echo $duelo['fecha'];
+                    echo "\n";
                 }
-                else{
-                    echo "-------------------------\n";
-                    echo "Presione ENTER para continuar...";
-                    trim(fgets(STDIN));
-                    break;
+            }
+
+            break;
+
+        case 22:
+
+            echo "ID Personaje: ";
+            $id = (int) trim(fgets(STDIN));
+
+            $historial = $torneo->historialPersonaje($id);
+
+            if (empty($historial)) {
+
+                echo "No hay duelos registrados.\n";
+            } else {
+
+                foreach ($historial as $duelo) {
+
+                    $p1 = $torneo->buscarPersonaje(
+                        $duelo['idPersonaje1']
+                    );
+
+                    $p2 = $torneo->buscarPersonaje(
+                        $duelo['idPersonaje2']
+                    );
+
+                    echo "Duelo #{$duelo['id']} | ";
+                    echo $p1->getNombre();
+                    echo " VS ";
+                    echo $p2->getNombre();
+                    echo " | Estado: ";
+                    echo $duelo['estado'];
+                    echo " | Fecha: ";
+                    echo $duelo['fecha'];
+                    echo "\n";
                 }
-                
-        }
-        case 8:{
+            }
+
+            break;
+
+        case 23:
 
             $ranking = $torneo->rankingVictorias();
 
@@ -440,67 +807,16 @@ do {
                     }
                 }
             }
-            echo "Presione ENTER para continuar...";
-            trim(fgets(STDIN));
-            break;
-        }
-        /* case 111:{
-
-            $personajes = $torneo->listarPersonajes();
-
-            if (empty($personajes)) {
-                echo "No hay personajes registrados.\n";
-            } else {
-                echo "===== LISTA DE PERSONAJES =====\n\n";
-                foreach ($personajes as $p) {
-                    echo $p->datosPersonaje();
-                    echo "----------------------------\n\n";
-                }
-            }
-            echo "Presione ENTER para continuar...";
-            trim(fgets(STDIN));
-            break;
-        }
-        case 211:{
-            
-            echo "Estado (disponible/equipada/rota o ENTER): ";
-            $estado = strtolower(trim(fgets(STDIN)));
-
-            $armas = $torneo->listarArmas($estado);
-
-            if (empty($armas)) {
-                echo "\n No existen armas con estado '$estado'.\n";
-            } else {
-                foreach ($armas as $arma) {
-                    echo $arma->datosArma() . "\n";
-                }
-            }
-            echo "Presione ENTER para continuar...";
-            trim(fgets(STDIN));
-            break;
-        }
-        case 323:{
-
-            $arenas = $torneo->listarArenas();
-
-            if (empty($arenas)) {
-                echo "No hay arenas registradas.\n";
-            } else {
-                foreach ($arenas as $arena) {
-                    echo $arena->datosArena() . "\n";
-                }
-            }
 
             break;
-        }
-        case 7:{
+
+        case 24:
 
             $resultado = $torneo->personajeMasVictorias();
 
             if (!$resultado) {
 
                 echo "No hay datos disponibles.\n";
-
             } else {
 
                 $personaje = $torneo->buscarPersonaje(
@@ -516,15 +832,25 @@ do {
             }
 
             break;
-        }
-        case 8:{
+
+        case 25:
+
+            echo "ID personaje: ";
+            $id = (int) trim(fgets(STDIN));
+
+            echo "Porcentaje: ";
+            echo $torneo->porcentajeVictorias($id);
+            echo "%\n";
+
+            break;
+
+        case 26:
 
             $resultado = $torneo->arenaMasDuelos();
 
             if (!$resultado) {
 
                 echo "No hay datos disponibles.\n";
-
             } else {
 
                 $arena = $torneo->buscarArena(
@@ -540,207 +866,15 @@ do {
             }
 
             break;
-        }
-        case 9:{
 
-            echo "ID personaje: ";
-            $id = (int) trim(fgets(STDIN));
-
-            echo "Porcentaje: ";
-            echo $torneo->porcentajeVictorias($id);
-            echo "%\n";
-
-            break;
-        
-        }
-        case 12:{
-            echo "\n=== PERSONAJES LESIONADOS ===\n";
-            $personajes = $torneo->listarPersonajes("lesionado");
-
-            if (empty($personajes)) {
-                echo "No hay personajes lesionados.\n";
-            } else {
-                foreach ($personajes as $p) {
-                    echo $p->datosPersonaje() . "\n";
-                    echo "============================\n";
-                }
-            }
-
-            break;
-        }
-        case 13:{ // Personajes retirados
-
-            $personajes = $torneo->listarPersonajes("retirado");
-
-            if (empty($personajes)) {
-                echo "No hay personajes retirados.\n";
-            } else {
-                foreach ($personajes as $p) {
-                    echo $p->datosPersonaje() . "\n";
-                }
-            }
-
-            break;
-        }
-        case 14:{ // Personajes listos para duelar
-
-            $personajes = $torneo->listarPersonajes();
-
-            $encontrados = false;
-
-            foreach ($personajes as $p) {
-                if ($p->puedeDuelar()) {
-                    echo $p->datosPersonaje() . "\n";
-                    $encontrados = true;
-                }
-            }
-
-            if (!$encontrados) {
-                echo "No hay personajes listos para duelar.\n";
-            }
-
-            break;
-        }
-        case 15:{ // Armas con dueño
-
-            $armas = $torneo->listarArmas();
-            $personajes = $torneo->listarPersonajes();
-
-            foreach ($armas as $arma) {
-
-                echo $arma->datosArma();
-
-                $duenio = null;
-
-                foreach ($personajes as $p) {
-                    $armaEquipada = $p->getArmaEquipada();
-
-                    if (
-                        $armaEquipada !== null &&
-                        $armaEquipada->getId() === $arma->getId()
-                    ) {
-                        $duenio = $p;
-                        break;
-                    }
-                }
-
-                if ($duenio !== null) {
-                    echo "Equipada por: " . $duenio->getNombre() . "\n";
-                } else {
-                    echo "Equipada por: Nadie\n";
-                }
-
-                echo "\n";
-            }
-
-            break;
-        }
-        case 16:{ // Historial general de duelos
-
-            $duelos = $dueloDAO->listar();
-
-            if (empty($duelos)) {
-                echo "No existen duelos.\n";
-            }
-
-            foreach ($duelos as $duelo) {
-
-                echo "ID: " . $duelo->getId() . "\n";
-                echo "Fecha: " . $duelo->getFecha() . "\n";
-                echo "Estado: " . $duelo->getEstado() . "\n";
-                echo "P1: " . $duelo->getPersonaje1()->getNombre() . "\n";
-                echo "P2: " . $duelo->getPersonaje2()->getNombre() . "\n";
-
-                if ($duelo->getGanador() !== null) {
-                    echo "Ganador: " . $duelo->getGanador()->getNombre() . "\n";
-                }
-
-                echo "-------------------------\n";
-            }
-
-            break;
-        }
-        case 17:{ // Duelos pendientes
-
-            $pendientes = $dueloDAO->listarPendientes();
-
-            if (empty($pendientes)) {
-                echo "No hay duelos pendientes.\n";
-            }
-
-            foreach ($pendientes as $duelo) {
-
-                echo "ID: " . $duelo['id'] . "\n";
-                echo "Fecha: " . $duelo['fecha'] . "\n";
-                echo "Personaje 1 ID: " . $duelo['idPersonaje1'] . "\n";
-                echo "Personaje 2 ID: " . $duelo['idPersonaje2'] . "\n";
-                echo "Arena ID: " . $duelo['idArena'] . "\n";
-                echo "-------------------------\n";
-            }
-
-            break;
-        }
-        case 18:{ // Historial de un personaje
-
-            echo "ID Personaje: ";
-            $idPersonaje = (int) trim(fgets(STDIN));
-
-            $duelos = $dueloDAO->listar();
-
-            $encontrado = false;
-
-            foreach ($duelos as $duelo) {
-
-                if (
-                    $duelo->getPersonaje1()->getId() == $idPersonaje ||
-                    $duelo->getPersonaje2()->getId() == $idPersonaje
-                ) {
-
-                    echo "Duelo #" . $duelo->getId() . "\n";
-                    echo "Fecha: " . $duelo->getFecha() . "\n";
-                    echo "Estado: " . $duelo->getEstado() . "\n";
-
-                    if ($duelo->getGanador() !== null) {
-                        echo "Ganador: " . $duelo->getGanador()->getNombre() . "\n";
-                    }
-
-                    echo "-------------------------\n";
-
-                    $encontrado = true;
-                }
-            }
-
-            if (!$encontrado) {
-                echo "No tiene duelos registrados.\n";
-            }
-
-            break;
-        }
-        case 19:{ // Porcentaje de victorias de todos
-
-            $personajes = $torneo->listarPersonajes();
-
-            foreach ($personajes as $p) {
-
-                echo $p->getNombre();
-                echo " -> ";
-                echo $torneo->porcentajeVictorias($p->getId());
-                echo "%\n";
-            }
-
-            break;
-        }
-        */
-        case 0:{
+        case 0:
 
             echo "Fin del programa.\n";
 
             break;
-        }
-        default:{
+
+        default:
 
             echo "Opción inválida.\n";
-        }
     }
-
 } while ($opcion !== 0);
