@@ -223,4 +223,26 @@ class DueloDAO
         2
     );
 }
+public function buscarPorId(int $id): ?array
+{
+    $sql = "SELECT * FROM duelos WHERE id = ?";
+
+    $stmt = $this->conexion->prepare($sql);
+    $stmt->execute([$id]);
+
+    $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    return $resultado ?: null;
+}
+public function listarRealizados(): array
+{
+    $sql = "SELECT * 
+            FROM duelos
+            WHERE estado = 'realizado'
+            ORDER BY fecha DESC";
+
+    $stmt = $this->conexion->query($sql);
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 }
