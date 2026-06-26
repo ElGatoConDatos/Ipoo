@@ -1,5 +1,8 @@
 <?php
 require_once __DIR__ . '/../Personaje.php';
+require_once __DIR__ . '/../Mago.php';
+require_once __DIR__ . '/../Guerrero.php';
+require_once __DIR__ . '/../Arquero.php';
 require_once __DIR__ . '/ArmaDAO.php';
 class PersonajeDAO
 {

@@ -236,10 +236,15 @@ public function buscarPorId(int $id): ?array
 }
 public function listarRealizados(): array
 {
-    $sql = "SELECT * 
-            FROM duelos
-            WHERE estado = 'realizado'
-            ORDER BY fecha DESC";
+    $sql = "SELECT 
+                d.*, 
+                j1.nombre AS jugador1, 
+                j2.nombre AS jugador2
+            FROM duelos d
+            INNER JOIN usuarios j1 ON d.id_jugador1 = j1.id
+            INNER JOIN usuarios j2 ON d.id_jugador2 = j2.id
+            WHERE d.estado = 'realizado'
+            ORDER BY d.fecha DESC";
 
     $stmt = $this->conexion->query($sql);
 

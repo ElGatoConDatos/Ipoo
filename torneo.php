@@ -57,7 +57,7 @@ class Torneo
 
         return true;
     }
-    public function ejecutarDuelosPendientes(): void
+    public function ejecutarDuelosPendientes(): string
     {
         $pendientes = $this->dueloDAO->listarPendientes();
 
@@ -81,8 +81,11 @@ class Torneo
             $this->dueloDAO->actualizar($duelo);
             $this->personajeDAO->actualizar($p1);
             $this->personajeDAO->actualizar($p2);
+            
         }
+        return $duelo->resumenDuelo();
     }
+    
     public function buscarPersonaje(int $id): ?Personaje
     {
         return $this->personajeDAO->buscarPorId($id);
@@ -216,7 +219,4 @@ public function armasEquipadas(): array
 
     return $resultado;
 }
-
-
-
 }
