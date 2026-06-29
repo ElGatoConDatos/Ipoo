@@ -241,8 +241,8 @@ public function listarRealizados(): array
                 j1.nombre AS jugador1, 
                 j2.nombre AS jugador2
             FROM duelos d
-            INNER JOIN usuarios j1 ON d.id_jugador1 = j1.id
-            INNER JOIN usuarios j2 ON d.id_jugador2 = j2.id
+            INNER JOIN personajes j1 ON d.idPersonaje1 = j1.id
+            INNER JOIN personajes j2 ON d.idPersonaje2 = j2.id
             WHERE d.estado = 'realizado'
             ORDER BY d.fecha DESC";
 

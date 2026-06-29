@@ -1,5 +1,5 @@
 <?php
-include_once 'personaje.php';
+include_once 'Personaje.php';
 
 class Arma{
     // ATRIBUTOS

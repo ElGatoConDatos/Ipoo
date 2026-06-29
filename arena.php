@@ -1,5 +1,5 @@
 <?php
-include_once 'personaje.php';
+include_once 'Personaje.php';
 
 class Arena{
     // ATRIBUTOS
@@ -95,3 +95,4 @@ class Arena{
         return $cadena;
     }
 }
+

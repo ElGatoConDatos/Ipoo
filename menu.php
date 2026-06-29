@@ -309,10 +309,6 @@ do {
                 echo "----------------------------\n\n";
                 echo "No hay personajes registrados.\n";
             } else {
-                foreach ($personajes as $p) {
-                    echo $p->datosPersonaje();
-                    echo "----------------------------\n\n";
-                }
                 echo "ID Personaje: ";
                 $idP = (int) trim(fgets(STDIN));
                 limpiarPantalla();
@@ -766,8 +762,6 @@ do {
         case 20:
             echo "\n=== EJECUTAR DUELOS ===\n";
             echo $torneo->ejecutarDuelosPendientes();
-
-            echo "Duelos ejecutados.\n";
 
             echo "Presione ENTER para continuar...";
             trim(fgets(STDIN));

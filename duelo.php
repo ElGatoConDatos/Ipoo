@@ -1,5 +1,5 @@
 <?php
-include_once 'arena.php';
+include_once 'Arena.php';
 
 
 class Duelo
@@ -178,10 +178,11 @@ class Duelo
         $cadena .= $this->getArena()->datosArena();
         $cadena .= "Estado del Duelo: " . $this->getEstado() . "\n\n";
         if ($this->getEstado() === "realizado") {
+            $cadena .= "........................................................................\n";
             $cadena .= "Resultado del Duelo: \n\n";
             $cadena .= "Datos Ganador:\n";
             $cadena .= $ganador->datosPersonaje();
-
+            $cadena .= "........................................................................\n";
             $cadena .= "Datos Perdedor:\n";
             $cadena .= $perdedor->datosPersonaje();
         } else {
@@ -191,5 +192,4 @@ class Duelo
         return $cadena;
 
     }
-
 }

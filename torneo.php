@@ -60,6 +60,7 @@ class Torneo
     public function ejecutarDuelosPendientes(): string
     {
         $pendientes = $this->dueloDAO->listarPendientes();
+        $cadenaDuelos = "";
 
         foreach ($pendientes as $data) {
 
@@ -77,13 +78,17 @@ class Torneo
             );
 
             $duelo->realizarDuelo();
-
+            $cadenaDuelos .= $duelo->resumenDuelo();
+        
             $this->dueloDAO->actualizar($duelo);
             $this->personajeDAO->actualizar($p1);
             $this->personajeDAO->actualizar($p2);
             
         }
-        return $duelo->resumenDuelo();
+        if($cadenaDuelos == ""){
+            $cadenaDuelos = "No hay duelos para ejecutar.";
+        }
+        return $cadenaDuelos;
     }
     
     public function buscarPersonaje(int $id): ?Personaje
@@ -220,3 +225,4 @@ public function armasEquipadas(): array
     return $resultado;
 }
 }
+
